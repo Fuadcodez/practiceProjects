@@ -12,10 +12,13 @@ import { supabase } from "@/supabase";
 import getStorage from '@supabase/storage-js'
 export default function Header() {
     const {data: session} = useSession()
+    console.log(session)
     const [isOpen, setIsOpen] = useState(false)
     const [selectedFile, setSelectedFile] = useState(null)
     const [imageFileUrl, setImageFileUrl] = useState(null)
     const [imageFileUploading, setImageFileUploading] = useState(false)
+    const [postUploading, setPostUploading] = useState(false)
+    const [caption, setCaption] = useState('')
     const imageRef = useRef(null)
     const addImageToPost = (e)=>{
         const file = e.target.files[0]
@@ -51,6 +54,22 @@ export default function Header() {
     console.log('File received successfully:', data);
   }
     }
+    const handleSubmit = async ()=>{
+    setPostUploading(true)
+    try {
+        const { data: newPost, error } = await supabase
+        .from("posts") // Name of your table
+        .insert([{username:session.user.name, caption, profileImg: session.user.image, image:imageFileUrl, }]); // Insert takes an array of objects
+if (error) {
+    throw error;
+}
+setPostUploading(false)
+setIsOpen(false)
+console.log("Record inserted:", newPost);
+} catch (error) {
+console.error("Error adding record:", error.message);
+}
+}
   return (
     <header className="shadow-sm sticky border-b top-0 bg-white z-30 p-3">
         <div className="flex justify-between items-center max-w-6xl mx-auto">
@@ -83,9 +102,11 @@ export default function Header() {
                     <input hidden ref={imageRef} type="file" accept="image/*" onChange={addImageToPost} />
                 </div>}
                 
-                <input type="text" maxLength='150' placeholder="please enter your caption" className="m-4 text-center border-none w-full focus:ring-0 outline-none" />
-                <button disabled={false} className="w-full bg-red-600 text-white p-2 shadow-md rounded-lg hover:brightness-105 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100">Upload Post</button>
+                <input type="text" maxLength='150' placeholder="please enter your caption" className="m-4 text-center border-none w-full focus:ring-0 outline-none" onChange={(e)=>setCaption(e.target.value)}/>
+                <button className="w-full bg-red-600 text-white p-2 shadow-md rounded-lg hover:brightness-105 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100" onClick={handleSubmit} disabled={!selectedFile||caption.trim()===''||postUploading||imageFileUploading}
+                >Upload Post</button>
             </Modal>)}
     </header>
   )
+
 }
