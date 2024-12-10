@@ -9,7 +9,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import {HiCamera} from 'react-icons/hi'
 import {AiOutlineClose} from 'react-icons/ai'
 import { supabase } from "@/supabase";
-import getStorage from '@supabase/storage-js'
+
 export default function Header() {
     const {data: session} = useSession()
     console.log(session)
