@@ -65,6 +65,7 @@ if (error) {
 }
 setPostUploading(false)
 setIsOpen(false)
+location.reload()
 console.log("Record inserted:", newPost);
 } catch (error) {
 console.error("Error adding record:", error.message);
