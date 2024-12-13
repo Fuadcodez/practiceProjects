@@ -21,12 +21,12 @@ const LikeSection = ({id}) => {
         console.log('data added');
       };}
       fetchLikes();
-    }, [id]);
+    }, []);
     
     // Check if the current user has liked the post
     useEffect(() => {
     console.log(likes)
-    if (likes.some((like) => like.username === session?.user?.username)) {
+    if (likes.find((like) => like.username === session?.user?.username)) {
       setHasLiked(true);
       console.log(`he has liked ${id}`)
       console.log(session.user.id)
@@ -94,7 +94,7 @@ const LikeSection = ({id}) => {
   //   }
   // }
   return (
-    <div className='flex items-center gap-1'>
+    <div className='flex items-center gap-1 pl-4'>
         {session&&<div className='flex border-t border-gray-100'>
             {hasLiked? (<HiHeart onClick={likePost} className='text-red-500 cursor-pointer text-3xl hover:scale-125 transition-transform duration-200 ease-out'/>): (<HiOutlineHeart onClick={likePost} className='cursor-pointer text-3xl hover:scale-125 transition-transform'/>)}
             </div>}
